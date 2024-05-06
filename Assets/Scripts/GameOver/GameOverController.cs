@@ -10,6 +10,8 @@ public class GameOverController : MonoBehaviour
     void Start()
     {
         btnPlay.onClick.AddListener(() => ReturnMenu());
+        AudioManagerController.Instance.MusicAudioSource.Stop();
+        AudioManagerController.Instance.PlaySfx(5);
     }
 
     void ReturnMenu()

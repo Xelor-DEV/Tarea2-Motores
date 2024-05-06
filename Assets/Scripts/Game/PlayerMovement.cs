@@ -1,55 +1,48 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
+using System.Collections;
 public class PlayerMovement : MonoBehaviour
 {
-    public KeyCode up;
-    public KeyCode down;
-    private Rigidbody2D myRB;
+    private float verticalDirection;
+    private Rigidbody2D _compRigidbody2D;
     [SerializeField]
     private float speed;
-    private float limitSuperior;
-    private float limitInferior;
     public int player_lives = 4;
-    // Start is called before the first frame update
     void Start()
     {
-        if (up == KeyCode.None) up = KeyCode.UpArrow;
-        if (down == KeyCode.None) down = KeyCode.DownArrow;
-        myRB = GetComponent<Rigidbody2D>();
-        SetMinMax();
+        _compRigidbody2D = GetComponent<Rigidbody2D>();
     }
-
-    // Update is called once per frame
-    void Update()
+    public void Input(InputAction.CallbackContext context)
     {
-        if (Input.GetKey(up) && transform.position.y < limitSuperior)
-        {
-            myRB.velocity = new Vector2(0f, speed);
-        }
-        else if (Input.GetKey(down) && transform.position.y > limitInferior)
-        {
-            myRB.velocity = new Vector2(0f, -speed);
-        }
-        else
-        {
-            myRB.velocity = Vector2.zero;
-        }
+        verticalDirection = context.ReadValue<float>();
     }
-
-    void SetMinMax()
+    void FixedUpdate()
     {
-        Vector3 bounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
-        limitInferior = -bounds.y;
-        limitSuperior = bounds.y;
+        _compRigidbody2D.velocity = new Vector2(_compRigidbody2D.velocity.x, verticalDirection * speed);
     }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Candy")
         {
             CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
         }
+        else if (other.tag == "Enemy")
+        {
+            StartCoroutine(Invulnerability());
+        }
+    }
+    IEnumerator Invulnerability()
+    {
+        this.gameObject.layer = 6;
+        SpriteRenderer sprite = this.gameObject.GetComponent<SpriteRenderer>();
+        Color color = sprite.color;
+        color.a = 0.5f;
+        sprite.color = color;
+
+        yield return new WaitForSeconds(1);
+        this.gameObject.layer = 0;
+
+        color.a = 1f;
+        sprite.color = color;
     }
 }

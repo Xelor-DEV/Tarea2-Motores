@@ -21,13 +21,10 @@ public class CandyGenerator : MonoBehaviour
         }
         instance = this;
     }
-    // Start is called before the first frame update
     void Start()
     {
         SetMinMax();
     }
-
-    // Update is called once per frame
     void Update()
     {
         actual_time += Time.deltaTime;
@@ -40,7 +37,6 @@ public class CandyGenerator : MonoBehaviour
             actual_candies.Add(candy);
         }
     }
-
     void SetMinMax()
     {
         Vector3 bounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));

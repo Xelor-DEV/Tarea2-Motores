@@ -1,20 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public Button btnPlay;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Button btnPlay;
+    [SerializeField] private Button btnOptions;
+    [SerializeField] private GameObject menu;
+    private void Start()
     {
-        btnPlay.onClick.AddListener(() => Play());
+        AudioManagerController.Instance.PlayMusic(0);
     }
-
-    void Play()
+    public void Play()
     {
+        AudioManagerController.Instance.SaveAudioSettings();
         SceneManager.LoadScene("Game");
+    }
+    public void ActiveOptions()
+    {
+        menu.SetActive(true);
+        menu.GetComponent<Image>().raycastTarget = true;
+    }
+    public void DisableMenu()
+    {
+        menu.SetActive(false);
+        menu.GetComponent<Image>().raycastTarget = false;
     }
 }
