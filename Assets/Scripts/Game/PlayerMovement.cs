@@ -26,12 +26,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.tag == "Candy")
         {
-            
+            AudioManagerController.Instance.PlaySfx(4);
             CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
         }
         else if (other.tag == "Enemy")
         {
-
+            AudioManagerController.Instance.PlaySfx(3);
+            AudioManagerController.Instance.PlaySfx(3);
             if (player_lives <= 0)
             {
                 gameManager.SceneChange("GameOver");
