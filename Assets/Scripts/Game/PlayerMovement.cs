@@ -5,9 +5,11 @@ public class PlayerMovement : MonoBehaviour
 {
     private float verticalDirection;
     private Rigidbody2D _compRigidbody2D;
+    [SerializeField] private GameManagerController gameManager;
     [SerializeField]
     private float speed;
-    public int player_lives = 4;
+    [SerializeField] public int player_lives;
+    [SerializeField] private Transform centerPosition;
     void Start()
     {
         _compRigidbody2D = GetComponent<Rigidbody2D>();
@@ -24,11 +26,26 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.tag == "Candy")
         {
+            
             CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
         }
         else if (other.tag == "Enemy")
         {
-            StartCoroutine(Invulnerability());
+
+            if (player_lives <= 0)
+            {
+                gameManager.SceneChange("GameOver");
+            }
+            else
+            {
+                player_lives = player_lives - other.GetComponent<Enemy>().Damage;
+                if (player_lives <= 0)
+                {
+                    gameManager.SceneChange("GameOver");
+                }
+                transform.position = centerPosition.position;
+                StartCoroutine(Invulnerability());
+            }
         }
     }
     IEnumerator Invulnerability()
